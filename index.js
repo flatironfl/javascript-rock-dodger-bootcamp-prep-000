@@ -12,6 +12,36 @@ const START = document.getElementById('start')
 
 var gameInterval = null
 
+// my added variables
+const DodgerDirectionEnum = {                                 // didrection dodger is moving
+                LEFT:     "left",
+                RIGHT:    "right",
+                STOPPED:  "stopped"
+}
+
+var dodger = {
+  width:        DODGER.clientWidth,
+  leftMaxPos:   0,                                // max left position of left edge of dodger
+  rightMaxPos:  GAME_WIDTH,
+  moveStepSize: 4,                                // number of pixels for each dodger movement
+  frameID:      0,                                // 0 is never a valid animation frame ID
+  direction:    DodgerDirectionEnum,
+  get leftEdgePos() { return parseInt(DODGER.style.left, 10)},   // parseInt() strips "px" off css syle.left value
+  get rightEdgePos() { return this.leftEdgePos + this.width}
+
+  /*
+   *moveLeft:     function () {
+
+  },
+  moveRight:    function moveRight() {
+                //place holder
+  },
+  stopMoving:   function () {
+                    window.cancelAnimationFrame(this.frameID);
+  }
+  */
+}
+
 /**
  * Be aware of what's above this line,
  * but all of your work should happen below.
@@ -119,6 +149,19 @@ function moveDodger(e) {
    * we've declared for you above.)
    * And be sure to use the functions declared below!
    */
+
+   if (e.which === LEFT_ARROW) {
+     // console.log(dodger);
+     moveDodgerLeft();
+   } else if (e.which === RIGHT_ARROW) {
+     moveDodgerRight();
+   } else {
+     // stopMoving();
+   }
+}
+
+function stopMoving() { // placeholder - to be put into dodger Objectives
+  console.log("stopMoving called");
 }
 
 function moveDodgerLeft() {
@@ -127,6 +170,23 @@ function moveDodgerLeft() {
    * This function should move DODGER to the left
    * (mabye 4 pixels?). Use window.requestAnimationFrame()!
    */
+   // log(this.moveLeft());
+
+   // dodger.moveLeft()
+
+   function step() {
+     DODGER.style.left = `${dodger.leftEdgePos - dodger.moveStepSize}px`; // !!!MAKE THIS A dodger obj method/settable property
+
+     if (dodger.leftEdgePos > dodger.leftMaxPos) {
+         //&& !(dodger.direction === DodgerDirectionEnum.LEFT)    // don't add frame if already going left
+       // dodger.direction = DodgerDirectionEnum.LEFT;
+       dodger.frameID = window.requestAnimationFrame(step);
+     } else {
+       // place holder
+     }
+ }
+
+ dodger.frameID = window.requestAnimationFrame(step);
 }
 
 function moveDodgerRight() {
@@ -135,6 +195,21 @@ function moveDodgerRight() {
    * This function should move DODGER to the right
    * (mabye 4 pixels?). Use window.requestAnimationFrame()!
    */
+  //console.log('moveRight called');
+  // dodger.moveRight();
+  // dodger.moveLeft()
+  function step() {
+    DODGER.style.left = `${dodger.leftEdgePos + dodger.moveStepSize}px`; // !!!MAKE THIS A dodger obj method/settable property
+
+    if (dodger.rightEdgePos < dodger.rightMaxPos) {
+        //&& !(dodger.direction === DodgerDirectionEnum.LEFT)    // don't add frame if already going left
+      // dodger.direction = DodgerDirectionEnum.LEFT;
+      dodger.frameID = window.requestAnimationFrame(step);
+    } else {
+      // place holder
+    }
+  }
+  dodger.frameID = window.requestAnimationFrame(step);
 }
 
 /**
@@ -146,6 +221,7 @@ function positionToInteger(p) {
 }
 
 function start() {
+  dodger.direction = DodgerDirectionEnum.STOPPED;  // dodger starts out stopped
   window.addEventListener('keydown', moveDodger)
 
   START.style.display = 'none'
